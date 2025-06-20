@@ -52,4 +52,11 @@ public class MemberService {
 
         return modelMapper.map(memberRepository.save(existingMember), MemberDTO.class);
     }
+
+    // delete a member
+    public void deleteMember(int memberId) {
+        Member existingMember = memberRepository.findById(memberId)
+                .orElseThrow(() -> new RuntimeException("Member not found"));
+        memberRepository.delete(existingMember);
+    }
 }
