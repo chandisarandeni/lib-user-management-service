@@ -33,4 +33,11 @@ public class MemberService {
                 .orElseThrow(() -> new RuntimeException("Member not found"));
         return modelMapper.map(member, MemberDTO.class);
     }
+
+    // add a new member
+    public MemberDTO addMember(MemberDTO memberDTO) {
+        Member member = modelMapper.map(memberDTO, Member.class);
+        Member savedMember = memberRepository.save(member);
+        return modelMapper.map(savedMember, MemberDTO.class);
+    }
 }
