@@ -40,4 +40,16 @@ public class MemberService {
         Member savedMember = memberRepository.save(member);
         return modelMapper.map(savedMember, MemberDTO.class);
     }
+
+    // update an existing member
+    public MemberDTO updateMember(int memberId, MemberDTO memberDTO) {
+        Member existingMember = memberRepository.findById(memberId)
+                .orElseThrow(() -> new RuntimeException("Member not found"));
+
+        // Ensure ID is not overwritten
+        memberDTO.setMemberId(memberId);
+        modelMapper.map(memberDTO, existingMember);
+
+        return modelMapper.map(memberRepository.save(existingMember), MemberDTO.class);
+    }
 }
