@@ -23,4 +23,9 @@ public class AdminService {
                 .map(admin -> modelMapper.map(admin, AdminDTO.class))
                 .toList();
     }
+
+    // get admin by id
+    public AdminDTO getAdminById(int adminId) {
+        return modelMapper.map(adminRepository.findById(adminId).orElse(null), AdminDTO.class);
+    }
 }
