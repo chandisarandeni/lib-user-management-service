@@ -1,6 +1,7 @@
 package com.sarasavi.lib_user_management_service.service;
 
 import com.sarasavi.lib_user_management_service.dto.AdminDTO;
+import com.sarasavi.lib_user_management_service.entity.Admin;
 import com.sarasavi.lib_user_management_service.repository.AdminRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,5 +28,12 @@ public class AdminService {
     // get admin by id
     public AdminDTO getAdminById(int adminId) {
         return modelMapper.map(adminRepository.findById(adminId).orElse(null), AdminDTO.class);
+    }
+
+    // create a new admin
+    public AdminDTO createAdmin(AdminDTO adminDTO) {
+        Admin admin = modelMapper.map(adminDTO, Admin.class);
+        Admin savedAdmin = adminRepository.save(admin);
+        return modelMapper.map(savedAdmin, AdminDTO.class);
     }
 }
