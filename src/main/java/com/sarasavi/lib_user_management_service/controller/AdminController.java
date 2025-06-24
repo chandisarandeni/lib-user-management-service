@@ -20,13 +20,21 @@ public class AdminController {
         return adminService.getAllAdmins();
     }
 
+    // get admin by id
     @GetMapping(path = "/admins/{adminId}")
     public AdminDTO getAdminById(@PathVariable int adminId) {
         return adminService.getAdminById(adminId);
     }
 
+    // create a new admin
     @PostMapping(path = "/admins/add")
     public AdminDTO createAdmin(@RequestBody AdminDTO adminDTO) {
         return adminService.createAdmin(adminDTO);
+    }
+
+    // update an existing admin
+    @PutMapping(path = "/admins/{adminId}")
+    public AdminDTO updateAdmin(@PathVariable int adminId, @RequestBody AdminDTO adminDTO) {
+        return adminService.updateAdmin(adminId, adminDTO);
     }
 }

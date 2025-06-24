@@ -36,4 +36,17 @@ public class AdminService {
         Admin savedAdmin = adminRepository.save(admin);
         return modelMapper.map(savedAdmin, AdminDTO.class);
     }
+
+    // update an existing admin
+    public AdminDTO updateAdmin(int adminId, AdminDTO adminDTO) {
+        Admin existingAdmin = adminRepository.findById(adminId).orElse(null);
+        if (existingAdmin != null) {
+            existingAdmin.setName(adminDTO.getName());
+            existingAdmin.setEmail(adminDTO.getEmail());
+            // Update other fields as necessary
+            Admin updatedAdmin = adminRepository.save(existingAdmin);
+            return modelMapper.map(updatedAdmin, AdminDTO.class);
+        }
+        return null; // or throw an exception
+    }
 }
