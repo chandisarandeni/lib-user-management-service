@@ -49,4 +49,14 @@ public class AdminService {
         }
         return null; // or throw an exception
     }
+
+    // delete an admin
+    public void deleteAdmin(int adminId) {
+        Admin existingAdmin = adminRepository.findById(adminId).orElse(null);
+        if (existingAdmin != null) {
+            adminRepository.delete(existingAdmin);
+        } else {
+            throw new RuntimeException("Admin not found with id: " + adminId);
+        }
+    }
 }

@@ -37,4 +37,10 @@ public class AdminController {
     public AdminDTO updateAdmin(@PathVariable int adminId, @RequestBody AdminDTO adminDTO) {
         return adminService.updateAdmin(adminId, adminDTO);
     }
+
+    // delete an admin
+    @DeleteMapping(path = "/admins/{adminId}")
+    public void deleteAdmin(@PathVariable int adminId) {
+        adminService.deleteAdmin(adminId);
+    }
 }
