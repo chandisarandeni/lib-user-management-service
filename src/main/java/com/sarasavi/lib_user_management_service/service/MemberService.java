@@ -59,4 +59,11 @@ public class MemberService {
                 .orElseThrow(() -> new RuntimeException("Member not found"));
         memberRepository.delete(existingMember);
     }
+
+    //--------- Count related service are added here
+
+    // total number of members
+    public long getMemberCount() {
+        return memberRepository.count();
+    }
 }

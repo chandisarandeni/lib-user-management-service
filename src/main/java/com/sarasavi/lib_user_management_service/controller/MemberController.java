@@ -45,4 +45,10 @@ public class MemberController {
     public void deleteMember(@PathVariable("memberId") int memberId) {
         memberService.deleteMember(memberId);
     }
+
+    //-------- count related operations added here --------
+    @GetMapping(path = "/members/count")
+    public long getMemberCount() {
+        return memberService.getMemberCount();
+    }
 }
