@@ -38,6 +38,15 @@ public class MemberService {
         return modelMapper.map(member, MemberDTO.class);
     }
 
+    // get member by email
+    public MemberDTO getMemberByEmail(String email) {
+        Member member = memberRepository.findMemberByEmail(email);
+        if (member == null) {
+            throw new RuntimeException("Member not found with email: " + email);
+        }
+        return modelMapper.map(member, MemberDTO.class);
+    }
+
     // add a new member
     public MemberDTO addMember(MemberDTO memberDTO) {
         Member member = modelMapper.map(memberDTO, Member.class);

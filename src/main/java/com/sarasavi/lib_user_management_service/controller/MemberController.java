@@ -28,6 +28,12 @@ public class MemberController {
         return memberService.getMemberById(memberId);
     }
 
+    // get member by email
+    @GetMapping(path = "/members/by-email")
+    public MemberDTO getMemberByEmail(@RequestParam String email) {
+        return memberService.getMemberByEmail(email);
+    }
+
     // add a new member
     @PostMapping(path = "/members")
     public MemberDTO addMember(@RequestBody MemberDTO memberDTO) {
