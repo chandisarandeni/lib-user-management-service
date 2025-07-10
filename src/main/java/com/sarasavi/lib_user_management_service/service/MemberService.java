@@ -105,6 +105,70 @@ public class MemberService {
         return modelMapper.map(memberRepository.save(existingMember), MemberDTO.class);
     }
 
+    // reset member password
+    // PUT otpCode as a request parameter -> check otpSendTime, and it is valid till only 5 minutes
+    // Send email, OTP code, and new password as req body
+    public void resetMemberPassword(String email, String otpCode, String newPassword) {
+        Member member = memberRepository.findMemberByEmail(email);
+        if (member == null) {
+            throw new RuntimeException("Member not found with email: " + email);
+        }
+
+        // Check if OTP code is valid and not expired
+        long currentTime = System.currentTimeMillis();
+        long otpSendTime = Long.parseLong(member.getOtpSendTime());
+        if (!otpCode.equals(member.getOtpCode()) || (currentTime - otpSendTime > 5 * 60 * 1000)) {
+            throw new RuntimeException("Invalid or expired OTP code");
+        }
+
+        // Hash the new password before saving
+        String hashedPassword = passwordEncoder.encode(newPassword);
+        member.setPassword(hashedPassword);
+
+        // Clear OTP code and send time after successful reset
+        member.setOtpCode(null);
+        member.setOtpSendTime(null);
+
+        memberRepository.save(member);
+
+        // Optionally, send confirmation email (not implemented here)
+        System.out.println("✅ Password successfully reset for member: " + email);
+    }
+
+    // send a reset password link
+    // to -> http://localhost:3000/api/v1/send-reset-password-link
+    // send a reset password link
+    public void sendResetPasswordLink(String email) {
+        Member member = memberRepository.findMemberByEmail(email);
+        if (member == null) {
+            throw new RuntimeException("Member not found with email: " + email);
+        }
+
+        // generate and store OTP code and send time
+        String otpCode = String.valueOf((int) (Math.random() * 9000) + 1000); // 4-digit OTP
+        member.setOtpCode(otpCode);
+        member.setOtpSendTime(String.valueOf(System.currentTimeMillis())); // current time in milliseconds
+        memberRepository.save(member);
+
+        // Send reset password link via POST request
+        try {
+            // Create request body as a Map
+            Map<String, Object> requestBody = new HashMap<>();
+            requestBody.put("email", email);
+            requestBody.put("otpCode", otpCode);
+
+            // Update endpoint to match the intended one
+            restTemplate.postForObject(
+                    "http://localhost:3000/api/v1/send-reset-password-link", // Correct endpoint
+                    requestBody,
+                    String.class
+            );
+            System.out.println("✅ Reset password link sent to: " + email);
+        } catch (Exception e) {
+            System.err.println("❌ Failed to send reset password link: " + e.getMessage());
+        }
+    }
+
     // delete a member
     public void deleteMember(int memberId) {
         Member existingMember = memberRepository.findById(memberId)

@@ -18,4 +18,6 @@ public class MemberDTO {
     private String gender;
     private String profilePicture;
     private String password;
+    private String otpCode;
+    private String otpSendTime;
 }

@@ -43,4 +43,10 @@ public class Member {
 
     @Column(name = "password")
     private String password;
+
+    @Column(name = "otp_code")
+    private String otpCode;
+
+    @Column(name = "otp_send_time")
+    private String otpSendTime;
 }
