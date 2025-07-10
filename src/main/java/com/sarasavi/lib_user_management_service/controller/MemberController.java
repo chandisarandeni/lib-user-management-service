@@ -29,19 +29,19 @@ public class MemberController {
     }
 
     // add a new member
-    @PostMapping(path = "/members/add")
+    @PostMapping(path = "/members")
     public MemberDTO addMember(@RequestBody MemberDTO memberDTO) {
         return memberService.addMember(memberDTO);
     }
 
     // update an existing member
-    @PutMapping(path = "/members/update/{memberId}")
+    @PutMapping(path = "/members{memberId}")
     public MemberDTO updateMember(@PathVariable("memberId") int memberId, @RequestBody MemberDTO memberDTO) {
         return memberService.updateMember(memberId, memberDTO);
     }
 
     // delete a member
-    @DeleteMapping(path = "/members/delete/{memberId}")
+    @DeleteMapping(path = "/members/{memberId}")
     public void deleteMember(@PathVariable("memberId") int memberId) {
         memberService.deleteMember(memberId);
     }

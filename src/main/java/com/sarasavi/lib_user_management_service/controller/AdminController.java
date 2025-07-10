@@ -27,7 +27,7 @@ public class AdminController {
     }
 
     // create a new admin
-    @PostMapping(path = "/admins/add")
+    @PostMapping(path = "/admins")
     public AdminDTO createAdmin(@RequestBody AdminDTO adminDTO) {
         return adminService.createAdmin(adminDTO);
     }

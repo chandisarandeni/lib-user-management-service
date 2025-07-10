@@ -29,19 +29,19 @@ public class LibrarianController {
     }
 
     // add a new librarian
-    @PostMapping(path = "/librarians/add")
+    @PostMapping(path = "/librarians")
     public LibrarianDTO createLibrarian(@RequestBody LibrarianDTO librarianDTO) {
         return librarianService.createLibrarian(librarianDTO);
     }
 
     // update existing librarian
-    @PutMapping(path = "/librarians/update/{librarianId}")
+    @PutMapping(path = "/librarians/{librarianId}")
     public LibrarianDTO updateLibrarian(@PathVariable("librarianId") int librarianId, @RequestBody LibrarianDTO librarianDTO) {
         return librarianService.updateLibrarian(librarianId, librarianDTO);
     }
 
     // delete librarian by id
-    @DeleteMapping(path = "/librarians/delete/{librarianId}")
+    @DeleteMapping(path = "/librarians/{librarianId}")
     public void deleteLibrarian(@PathVariable("librarianId") int librarianId) {
         librarianService.deleteLibrarian(librarianId);
     }
