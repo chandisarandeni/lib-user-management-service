@@ -7,8 +7,11 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class MemberService {
@@ -18,6 +21,9 @@ public class MemberService {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -49,16 +55,43 @@ public class MemberService {
 
     // add a new member
     public MemberDTO addMember(MemberDTO memberDTO) {
+        // Map DTO to Entity
         Member member = modelMapper.map(memberDTO, Member.class);
 
-        // Hash the password before saving
+        // Hash the raw password before saving
         String rawPassword = member.getPassword();
         String hashedPassword = passwordEncoder.encode(rawPassword);
         member.setPassword(hashedPassword);
 
+        // Save the new member
         Member savedMember = memberRepository.save(member);
-        return modelMapper.map(savedMember, MemberDTO.class);
+        MemberDTO savedDTO = modelMapper.map(savedMember, MemberDTO.class);
+
+        // Send welcome email (via POST request)
+        try {
+            // Create request body as a Map
+            Map<String, Object> requestBody = new HashMap<>();
+            requestBody.put("memberId", savedDTO.getMemberId());
+            requestBody.put("name", savedDTO.getName());
+            requestBody.put("email", savedDTO.getEmail());
+            requestBody.put("password", rawPassword); // ⚠️ Avoid in production, better to send a reset link
+
+            // Send POST request
+            restTemplate.postForObject(
+                    "http://localhost:3000/api/v1/send-welcome-mail",
+                    requestBody,
+                    String.class
+            );
+
+            System.out.println("✅ Welcome email sent to: " + savedDTO.getEmail());
+
+        } catch (Exception e) {
+            System.err.println("❌ Failed to send welcome email: " + e.getMessage());
+        }
+
+        return savedDTO;
     }
+
 
     // update an existing member
     public MemberDTO updateMember(int memberId, MemberDTO memberDTO) {
