@@ -5,6 +5,7 @@ import com.sarasavi.lib_user_management_service.entity.Member;
 import com.sarasavi.lib_user_management_service.repository.MemberRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +18,9 @@ public class MemberService {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     // ----------- basic CRUD operations added here
 
@@ -37,6 +41,12 @@ public class MemberService {
     // add a new member
     public MemberDTO addMember(MemberDTO memberDTO) {
         Member member = modelMapper.map(memberDTO, Member.class);
+
+        // Hash the password before saving
+        String rawPassword = member.getPassword();
+        String hashedPassword = passwordEncoder.encode(rawPassword);
+        member.setPassword(hashedPassword);
+
         Member savedMember = memberRepository.save(member);
         return modelMapper.map(savedMember, MemberDTO.class);
     }
