@@ -35,7 +35,7 @@ public class MemberController {
     }
 
     // update an existing member
-    @PutMapping(path = "/members{memberId}")
+    @PutMapping(path = "/members/{memberId}")
     public MemberDTO updateMember(@PathVariable("memberId") int memberId, @RequestBody MemberDTO memberDTO) {
         return memberService.updateMember(memberId, memberDTO);
     }
