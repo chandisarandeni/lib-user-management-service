@@ -98,11 +98,24 @@ public class MemberService {
         Member existingMember = memberRepository.findById(memberId)
                 .orElseThrow(() -> new RuntimeException("Member not found"));
 
-        // Ensure ID is not overwritten
-        memberDTO.setMemberId(memberId);
-        modelMapper.map(memberDTO, existingMember);
+        // Update fields
+        existingMember.setName(memberDTO.getName());
+        existingMember.setNic(memberDTO.getNic());
+        existingMember.setEmail(memberDTO.getEmail());
+        existingMember.setPhoneNumber(memberDTO.getPhoneNumber());
+        existingMember.setAddress(memberDTO.getAddress());
+        existingMember.setDateOfBirth(memberDTO.getDateOfBirth());
+        existingMember.setGender(memberDTO.getGender());
+        existingMember.setProfilePicture(memberDTO.getProfilePicture());
 
-        return modelMapper.map(memberRepository.save(existingMember), MemberDTO.class);
+        // If a password is provided, hash it and update
+        if (memberDTO.getPassword() != null && !memberDTO.getPassword().isEmpty()) {
+            String hashedPassword = passwordEncoder.encode(memberDTO.getPassword());
+            existingMember.setPassword(hashedPassword);
+        }
+
+        Member updatedMember = memberRepository.save(existingMember);
+        return modelMapper.map(updatedMember, MemberDTO.class);
     }
 
     // reset member password
