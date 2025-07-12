@@ -32,6 +32,18 @@ public class Librarian {
     @Column(name = "address")
     private String address;
 
+    @Column(name = "status")
+    private String status;
+
+    @Column(name = "shift")
+    private String shift;
+
+    @Column(name = "experience")
+    private String experience;
+
+    @Column(name = "join_date")
+    private String joinDate;
+
     @Column(name = "password")
     private String password;
 }

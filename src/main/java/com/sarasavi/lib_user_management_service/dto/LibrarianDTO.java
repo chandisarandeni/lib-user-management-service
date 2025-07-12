@@ -14,5 +14,9 @@ public class LibrarianDTO {
     private String email;
     private String phoneNumber;
     private String address;
+    private String status;
+    private String shift;
+    private String experience;
+    private String joinDate;
     private String password;
 }
