@@ -62,11 +62,15 @@ public class LibrarianService {
 
         // Update fields
         existingLibrarian.setName(librarianDTO.getName());
-        existingLibrarian.setName(librarianDTO.getName());
         existingLibrarian.setNic(librarianDTO.getNic());
         existingLibrarian.setEmail(librarianDTO.getEmail());
         existingLibrarian.setPhoneNumber(librarianDTO.getPhoneNumber());
         existingLibrarian.setAddress(librarianDTO.getAddress());
+        existingLibrarian.setStatus(librarianDTO.getStatus());
+        existingLibrarian.setShift(librarianDTO.getShift());
+        existingLibrarian.setExperience(librarianDTO.getExperience());
+        existingLibrarian.setJoinDate(librarianDTO.getJoinDate());
+        existingLibrarian.setPassword(librarianDTO.getPassword());
 
         // If password is provided, hash it and update
         if (librarianDTO.getPassword() != null && !librarianDTO.getPassword().isEmpty()) {
