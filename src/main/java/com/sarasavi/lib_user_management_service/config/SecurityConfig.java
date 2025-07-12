@@ -15,11 +15,15 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/members/**").permitAll() // Public access
+                        .requestMatchers(
+                                "/api/v1/members/**",
+                                "/api/v1/librarians/**",
+                                "/api/v1/admins/**"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
-                .csrf(csrf -> csrf.disable()) // Updated syntax: disables CSRF
-                .httpBasic(Customizer.withDefaults()); // or use formLogin(Customizer.withDefaults()) if needed
+                .csrf(csrf -> csrf.disable())
+                .httpBasic(Customizer.withDefaults());
 
         return http.build();
     }
