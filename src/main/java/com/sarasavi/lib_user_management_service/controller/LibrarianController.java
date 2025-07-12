@@ -28,6 +28,12 @@ public class LibrarianController {
         return librarianService.getLibrarianById(librarianId);
     }
 
+    // get librarian by email
+    @GetMapping(path = "/librarians/by-email")
+    public LibrarianDTO getLibrarianByEmail(@RequestParam String email) {
+        return librarianService.getLibrarianByEmail(email);
+    }
+
     // add a new librarian
     @PostMapping(path = "/librarians")
     public LibrarianDTO createLibrarian(@RequestBody LibrarianDTO librarianDTO) {

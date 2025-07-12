@@ -1,6 +1,7 @@
 package com.sarasavi.lib_user_management_service.service;
 
 import com.sarasavi.lib_user_management_service.dto.LibrarianDTO;
+import com.sarasavi.lib_user_management_service.dto.MemberDTO;
 import com.sarasavi.lib_user_management_service.entity.Librarian;
 import com.sarasavi.lib_user_management_service.repository.LibrarianRepository;
 import org.modelmapper.ModelMapper;
@@ -36,6 +37,15 @@ public class LibrarianService {
         return librarianRepository.findById(librarianId)
                 .map(librarian -> modelMapper.map(librarian, LibrarianDTO.class))
                 .orElse(null);
+    }
+
+    // get librarian by email
+    public LibrarianDTO getLibrarianByEmail(String email) {
+        Librarian librarian = librarianRepository.findLibrarianByEmail(email);
+        if (librarian == null) {
+            throw new RuntimeException("Librarian not found with email: " + email);
+        }
+        return modelMapper.map(librarian, LibrarianDTO.class);
     }
 
     // add a new librarian
