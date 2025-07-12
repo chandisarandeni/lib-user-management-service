@@ -5,6 +5,7 @@ import com.sarasavi.lib_user_management_service.entity.Admin;
 import com.sarasavi.lib_user_management_service.repository.AdminRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +18,9 @@ public class AdminService {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     // get all admins
     public List<AdminDTO> getAllAdmins() {
@@ -32,22 +36,38 @@ public class AdminService {
 
     // create a new admin
     public AdminDTO createAdmin(AdminDTO adminDTO) {
+        // Map DTO to Entity
         Admin admin = modelMapper.map(adminDTO, Admin.class);
+
+        // Hash the raw password before saving
+        String rawPassword = admin.getPassword();
+        String hashedPassword = passwordEncoder.encode(rawPassword);
+        admin.setPassword(hashedPassword);
+
+        // Save the new admin
         Admin savedAdmin = adminRepository.save(admin);
-        return modelMapper.map(savedAdmin, AdminDTO.class);
+        AdminDTO savedAdminDTO = modelMapper.map(savedAdmin, AdminDTO.class);
+
+        return modelMapper.map(savedAdminDTO, AdminDTO.class);
     }
 
     // update an existing admin
     public AdminDTO updateAdmin(int adminId, AdminDTO adminDTO) {
-        Admin existingAdmin = adminRepository.findById(adminId).orElse(null);
-        if (existingAdmin != null) {
-            existingAdmin.setName(adminDTO.getName());
-            existingAdmin.setEmail(adminDTO.getEmail());
-            // Update other fields as necessary
-            Admin updatedAdmin = adminRepository.save(existingAdmin);
-            return modelMapper.map(updatedAdmin, AdminDTO.class);
+        Admin existingAdmin = adminRepository.findById(adminId)
+                .orElseThrow(() -> new RuntimeException("Admin not found with id: " + adminId));
+
+        // Ensure ID is not overwritten
+        adminDTO.setAdminId(adminId);
+        modelMapper.map(adminDTO, existingAdmin);
+
+        // Hash the password if it has been changed
+        if (adminDTO.getPassword() != null && !adminDTO.getPassword().isEmpty()) {
+            String hashedPassword = passwordEncoder.encode(adminDTO.getPassword());
+            existingAdmin.setPassword(hashedPassword);
         }
-        return null; // or throw an exception
+
+        Admin updatedAdmin = adminRepository.save(existingAdmin);
+        return modelMapper.map(updatedAdmin, AdminDTO.class);
     }
 
     // delete an admin
