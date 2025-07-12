@@ -34,6 +34,16 @@ public class AdminService {
         return modelMapper.map(adminRepository.findById(adminId).orElse(null), AdminDTO.class);
     }
 
+    // get admin by email
+    public AdminDTO getAdminByEmail(String email) {
+        Admin admin = adminRepository.findByEmail(email);
+        if (admin != null) {
+            return modelMapper.map(admin, AdminDTO.class);
+        } else {
+            return null; // or throw an exception if preferred
+        }
+    }
+
     // create a new admin
     public AdminDTO createAdmin(AdminDTO adminDTO) {
         // Map DTO to Entity

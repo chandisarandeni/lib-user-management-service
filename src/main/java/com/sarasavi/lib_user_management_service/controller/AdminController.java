@@ -26,6 +26,12 @@ public class AdminController {
         return adminService.getAdminById(adminId);
     }
 
+    // get admin by email
+    @GetMapping(path = "/admins/by-email")
+    public AdminDTO getAdminByEmail(@RequestParam String email) {
+        return adminService.getAdminByEmail(email);
+    }
+
     // create a new admin
     @PostMapping(path = "/admins")
     public AdminDTO createAdmin(@RequestBody AdminDTO adminDTO) {
