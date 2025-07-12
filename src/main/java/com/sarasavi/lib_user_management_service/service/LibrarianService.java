@@ -5,6 +5,7 @@ import com.sarasavi.lib_user_management_service.entity.Librarian;
 import com.sarasavi.lib_user_management_service.repository.LibrarianRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +18,9 @@ public class LibrarianService {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     // ----------- basic CRUD operations added here
 
@@ -36,9 +40,19 @@ public class LibrarianService {
 
     // add a new librarian
     public LibrarianDTO createLibrarian(LibrarianDTO librarianDTO) {
+        // Map DTO to Entity
         Librarian librarian = modelMapper.map(librarianDTO, Librarian.class);
+
+        // Hash the raw password before saving
+        String rawPassword = librarian.getPassword();
+        String hashedPassword = passwordEncoder.encode(rawPassword);
+        librarian.setPassword(hashedPassword);
+
+        // Save the new librarian
         Librarian savedLibrarian = librarianRepository.save(librarian);
-        return modelMapper.map(savedLibrarian, LibrarianDTO.class);
+        LibrarianDTO savedLibrarianDTO = modelMapper.map(savedLibrarian, LibrarianDTO.class);
+
+        return modelMapper.map(savedLibrarianDTO, LibrarianDTO.class);
     }
 
     // update existing librarian
@@ -46,11 +60,22 @@ public class LibrarianService {
         Librarian existingLibrarian = librarianRepository.findById(librarianId)
                 .orElseThrow(() -> new RuntimeException("Librarian not found"));
 
-        // Ensure ID is not overwritten
-        librarianDTO.setLibrarianId(librarianId);
-        modelMapper.map(librarianDTO, existingLibrarian);
+        // Update fields
+        existingLibrarian.setName(librarianDTO.getName());
+        existingLibrarian.setName(librarianDTO.getName());
+        existingLibrarian.setNic(librarianDTO.getNic());
+        existingLibrarian.setEmail(librarianDTO.getEmail());
+        existingLibrarian.setPhoneNumber(librarianDTO.getPhoneNumber());
+        existingLibrarian.setAddress(librarianDTO.getAddress());
 
-        return modelMapper.map(librarianRepository.save(existingLibrarian), LibrarianDTO.class);
+        // If password is provided, hash it and update
+        if (librarianDTO.getPassword() != null && !librarianDTO.getPassword().isEmpty()) {
+            String hashedPassword = passwordEncoder.encode(librarianDTO.getPassword());
+            existingLibrarian.setPassword(hashedPassword);
+        }
+
+        Librarian updatedLibrarian = librarianRepository.save(existingLibrarian);
+        return modelMapper.map(updatedLibrarian, LibrarianDTO.class);
     }
 
     // delete librarian by id
